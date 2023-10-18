@@ -4,6 +4,7 @@
 #include <vector>
 #include <array>
 #include <ctime>
+#include <limits>
 
 std::vector<std::string> split(std::string string, char delimiter)
 {
@@ -37,6 +38,22 @@ void load_db(std::string path, std::vector<std::vector<std::string>>& tasks)
     file.close();
 }
 
+void save_db(std::string path, std::vector<std::vector<std::string>> tasks)
+{
+    std::fstream file(path);
+    for (std::vector<std::string> line : tasks)
+    {
+        std::string export_line = "";
+        for (std::string part : line)
+        {
+            export_line += part + "\t";
+        }
+        export_line += '\n';
+        file << export_line;
+    }
+    file.close();
+}
+
 void print_db(std::vector<std::vector<std::string>> tasks)
 {
     std::cout << "Here are your tasks:\n";
@@ -54,11 +71,13 @@ void print_db(std::vector<std::vector<std::string>> tasks)
 
 void add_task(std::vector<std::vector<std::string>>& tasks)
 {
-    std::string name, description, string_date, string_time, status = "✘";
+    std::string string_date, string_time, status = "✘";
+    char name[64], description[256];
     std::cout << "Write the name of your task: ";
-    std::cin >> name;
+    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+    std::cin.getline(name, 64);
     std::cout << "Write the description of your task:\n\t";
-    std::cin >> description;
+    std::cin.getline(description, 256);
     std::cout << "Write the deadline date or 0 if there is no deadline: ";
     std::cin >> string_date;
     std::cout << "Write the time by which you need to do the task\nor 0 if the task can be done at any time: ";
@@ -67,20 +86,38 @@ void add_task(std::vector<std::vector<std::string>>& tasks)
     tasks.push_back(task);
 }
 
-void save_db(std::string path, std::vector<std::vector<std::string>> tasks)
+void edit_task(std::vector<std::vector<std::string>>& tasks)
 {
-    std::fstream file(path);
-    for (std::vector<std::string> line : tasks)
+
+}
+
+void delete_task(std::vector<std::vector<std::string>>& tasks)
+{
+    int task_num = 0;
+    std::cout << "Write the number of the task you want to delete: ";
+    std::cin >> task_num;
+    tasks.erase(tasks.begin() + task_num - 1);
+    save_db("tasks.txt", tasks);
+}
+
+void switch_status(std::vector<std::vector<std::string>>& tasks)
+{
+    int task_num = 0;
+    std::cout << "Write the number of the task for which you want to change the status of completion: ";
+    std::cin >> task_num;
+    if (tasks[task_num-1][4] == "✘")
     {
-        std::string export_line = "";
-        for (std::string part : line)
-        {
-            export_line += part + "\t";
-        }
-        export_line += '\n';
-        file << export_line;
+        tasks[task_num-1][4] = "✔";
     }
-    file.close();
+    else
+    {
+        tasks[task_num-1][4] = "✘";
+    }
+}
+
+void sort_tasks(std::vector<std::vector<std::string>>& tasks)
+{
+
 }
 
 int main()
@@ -93,7 +130,7 @@ int main()
     while (working)
     {
         print_db(tasks);
-        std::cout << "Choose what you want to do:\n\t1. Add task\n\t2. Edit task\n\t3. View tasks\nOr print 0 to exit.\n";
+        std::cout << "Choose what you want to do:\n\t1. Add the task\n\t2. Edit task\n\t3. Switch the status of the task\n\t4. Delete task\n\t5. Sort tasks\nOr print 0 to exit.\n";
         char mode;
         std::cin >> mode;
         switch (mode)
@@ -106,9 +143,16 @@ int main()
                 add_task(tasks);
                 break;
             case '2':
-
+                edit_task(tasks);
                 break;
             case '3':
+                switch_status(tasks);
+                break;
+            case '4':
+                delete_task(tasks);
+                break;
+            case '5':
+                sort_tasks(tasks);
                 break;
             default:
                 std::cout << "Invalid input! Try again.\n";
