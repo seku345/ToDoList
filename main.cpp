@@ -38,7 +38,7 @@ void load_db(std::string path, std::vector<std::vector<std::string>>& tasks)
     file.close();
 }
 
-void save_db(std::string path, std::vector<std::vector<std::string>> tasks)
+void save_db(std::string path, std::vector<std::vector<std::string>>& tasks)
 {
     std::fstream file(path);
     for (std::vector<std::string> line : tasks)
@@ -54,7 +54,7 @@ void save_db(std::string path, std::vector<std::vector<std::string>> tasks)
     file.close();
 }
 
-void print_db(std::vector<std::vector<std::string>> tasks)
+void print_db(std::vector<std::vector<std::string>>& tasks)
 {
     std::cout << "Here are your tasks:\n";
     for (int i = 0; i < tasks.size(); ++i)
@@ -91,13 +91,20 @@ void edit_task(std::vector<std::vector<std::string>>& tasks)
 
 }
 
-void delete_task(std::vector<std::vector<std::string>>& tasks)
+std::vector<std::vector<std::string>> deleted_tasks(std::vector<std::vector<std::string>> tasks)
 {
     int task_num = 0;
     std::cout << "Write the number of the task you want to delete: ";
     std::cin >> task_num;
-    tasks.erase(tasks.begin() + task_num - 1);
-    save_db("tasks.txt", tasks);
+    std::vector<std::vector<std::string>> new_tasks;
+    for (int i = 0; i < tasks.size(); ++i)
+    {
+        if (!(i == task_num-1))
+        {
+            new_tasks.push_back(tasks[i]);
+        }
+    }
+    return new_tasks;
 }
 
 void switch_status(std::vector<std::vector<std::string>>& tasks)
@@ -125,7 +132,8 @@ int main()
     // loading data base
     std::vector<std::vector<std::string>> tasks;
     load_db("tasks.txt", tasks);
-
+    
+    //TODO switch to if-else!
     bool working = true;
     while (working)
     {
@@ -141,18 +149,23 @@ int main()
                 break;
             case '1':
                 add_task(tasks);
+                save_db("tasks.txt", tasks);
                 break;
             case '2':
                 edit_task(tasks);
+                save_db("tasks.txt", tasks);
                 break;
             case '3':
                 switch_status(tasks);
+                save_db("tasks.txt", tasks);
                 break;
             case '4':
-                delete_task(tasks);
+                tasks = deleted_tasks(tasks);
+                save_db("tasks.txt", tasks);
                 break;
             case '5':
                 sort_tasks(tasks);
+                save_db("tasks.txt", tasks);
                 break;
             default:
                 std::cout << "Invalid input! Try again.\n";
