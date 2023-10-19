@@ -1,0 +1,5 @@
+Finish English Essay	Write a 3-page essay on the impact of technology on society.	2023-10-25	15:00	✘
+Grocery Shopping	Buy groceries for the week, including fruits, vegetables, and milk.	0	0	✘
+Workout	Go to the gym and do a full-body workout.	0	0	✘
+Meeting with John	Discuss the project updates with John.	2023-10-20	14:30	✘
+Call Mom	Check in with Mom and see how she's doing.	0	0	✘

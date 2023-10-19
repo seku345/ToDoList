@@ -5,6 +5,7 @@
 #include <array>
 #include <ctime>
 #include <limits>
+#include <algorithm>
 
 std::vector<std::string> split(std::string string, char delimiter)
 {
@@ -155,7 +156,43 @@ void switch_status(std::vector<std::vector<std::string>>& tasks)
 
 void sort_tasks(std::vector<std::vector<std::string>>& tasks)
 {
+    std::pair<std::string, std::string> how_to_sort;
+    std::cout << "Choose how you want to sort your tasks:\n\t1. By alpha\n\t2. By execution\n\t3. By deadline\nAlso print 1 if you want to sort in increasing order or -1 in decreasing order: ";
+    std::cin >> how_to_sort.first >> how_to_sort.second;
+    if (((how_to_sort.first != "1") && (how_to_sort.first != "2") && (how_to_sort.first != "3")) ||
+        ((how_to_sort.second != "1") && (how_to_sort.second != "-1")))
+    {
+        std::cout << "Invalid input!\n";
+        return;
+    }
+    std::sort(tasks.begin(), tasks.end(),
+    [how_to_sort](std::vector<std::string> a, std::vector<std::string> b)
+    {
+        if ((how_to_sort.first == "1") && (how_to_sort.second == "1"))
+        {
+            return a[0] < b[0];
+        }
+        else if ((how_to_sort.first == "1") && (how_to_sort.second == "-1"))
+        {
+            return a[0] > b[0];
+        }
+        else if ((how_to_sort.first == "2") && (how_to_sort.second == "1"))
+        {
+            return ((a[4] == "✔") && (b[4] == "✘"));
+        }
+        else if ((how_to_sort.first == "2") && (how_to_sort.second == "-1"))
+        {
+            return ((a[4] == "✘") && (b[4] == "✔"));
+        }
+        else if ((how_to_sort.first == "3") && (how_to_sort.second == "1"))
+        {
 
+        }
+        else if ((how_to_sort.first == "3") && (how_to_sort.second == "-1"))
+        {
+
+        }
+    });
 }
 
 int main()
