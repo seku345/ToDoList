@@ -2,7 +2,6 @@
 #include <fstream>
 #include <string>
 #include <vector>
-#include <array>
 #include <ctime>
 #include <limits>
 #include <algorithm>
@@ -114,6 +113,50 @@ void save_db(std::string path, std::vector<std::vector<std::string>> tasks)
     file.close();
 }
 
+bool is_deadline_passed(std::string deadline_date, std::string deadline_time, bool& is_today)
+{
+    // getting current time
+    time_t current_time;
+    time(&current_time);
+    struct tm* time_now = localtime(&current_time);
+
+    // checking cases
+    if ((deadline_date == "0") && (deadline_time == "0"))
+    {
+        return false;
+    }
+    else if ((deadline_date == "0") && (deadline_time != "0"))
+    {
+        deadline_date = std::to_string(time_now->tm_year + 1900) + "." + std::to_string(time_now->tm_mon + 1) + "." + std::to_string(time_now->tm_mday);
+    }
+
+    int year, month, day, hour, minute;
+    if (sscanf(deadline_date.c_str(), "%d.%d.%d", &year, &month, &day) == 3)
+    {
+        if (sscanf(deadline_time.c_str(), "%d:%d", &hour, &minute) == 2)
+        {
+            struct tm deadline = {0};
+            deadline.tm_year = year - 1900;
+            deadline.tm_mon = month - 1;
+            deadline.tm_mday = day;
+            deadline.tm_hour = hour;
+            deadline.tm_min = minute;
+            deadline.tm_sec = 0;
+
+            if (std::to_string(time_now->tm_year + 1900) + "." + std::to_string(time_now->tm_mon + 1) + "." + std::to_string(time_now->tm_mday) == deadline_date)
+            {
+                is_today = true;
+                return false;
+            }
+            else if (mktime(&deadline) < mktime(time_now))
+            {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
 void print_db(std::vector<std::vector<std::string>> tasks)
 {
     int max_num_len = len_of_int(int(tasks.size()));
@@ -141,11 +184,40 @@ void print_db(std::vector<std::vector<std::string>> tasks)
         {
             if (*a == "✔") switch_color("green");
             if (*a == "✘") switch_color("red");
+            bool is_today = false;
+            if (a == tasks[i].begin() + 2)
+            {
+                if (is_deadline_passed(tasks[i][2], tasks[i][3], is_today))
+                {
+                    if (!is_today) switch_color("red");
+                    else if (*a != "0") switch_color("yellow");
+                }
+                else if (is_today && *a != "0") switch_color("yellow");
+            }
+            if (a == tasks[i].begin() + 3)
+            {
+                if (is_deadline_passed(tasks[i][2], tasks[i][3], is_today))
+                {
+                    switch_color("red");
+                }
+            }
             std::cout << *a;
-            if (a == tasks[i].begin()) std::cout << name_shift;
-            else if (a == (tasks[i].begin() + 1)) std::cout << description_shift;
-            else if (a == (tasks[i].begin() + 2)) std::cout << date_shift;
-            else if (a == (tasks[i].begin() + 3)) std::cout << time_shift;
+            if (a == tasks[i].begin()) // name
+            {
+                std::cout << name_shift;
+            }
+            else if (a == (tasks[i].begin() + 1)) // description
+            {
+                std::cout << description_shift;
+            }
+            else if (a == (tasks[i].begin() + 2)) // date
+            {
+                std::cout << date_shift;
+            }
+            else if (a == (tasks[i].begin() + 3)) // time
+            {
+                std::cout << time_shift;
+            }
             switch_color("white");
         }
         std::cout << '\n';
