@@ -22,6 +22,17 @@ void switch_color(std::string color)
     SetConsoleTextAttribute(hConsole, color_code);
 }
 
+int len_of_int(int n)
+{
+    int k = 0;
+    while (n > 0)
+    {
+        n /= 10;
+        k++;
+    }
+    return k;
+}
+
 std::string multi_str(std::string s, int n)
 {
     std::string r = "";
@@ -105,24 +116,22 @@ void save_db(std::string path, std::vector<std::vector<std::string>> tasks)
 
 void print_db(std::vector<std::vector<std::string>> tasks)
 {
+    int max_num_len = len_of_int(int(tasks.size()));
+    std::string num_shift = multi_str(" ", max_num_len + 2);
     std::string name_shift = multi_str(" ", std::max(4, max_length(line_from_column(0, tasks))) - 4 + 2);
     std::string description_shift = multi_str(" ", std::max(11, max_length(line_from_column(1, tasks))) - 11 + 2);
     std::string date_shift = multi_str(" ", std::max(13, max_length(line_from_column(2, tasks))) - 13 + 2);
     std::string time_shift = multi_str(" ", std::max(13, max_length(line_from_column(3, tasks))) - 13 + 2);
-    std::cout << max_length(line_from_column(0, tasks)) << '\n';
-    for (std::string s : line_from_column(0, tasks))
-    {
-        std::cout << s.length() << '\n';
-    }
 
     std::cout << "Here are your tasks:\n";
     switch_color("yellow");
-    std::cout << "N  Name" << name_shift << "Description" << description_shift << "Date deadline" << date_shift << "Time deadline" << time_shift <<"Status\n";
+    std::cout << "N" << num_shift << "Name" << name_shift << "Description" << description_shift << "Date deadline" << date_shift << "Time deadline" << time_shift <<"Status\n";
     switch_color("white");
     for (int i = 0; i < tasks.size(); ++i)
     {
+        num_shift = multi_str("0", max_num_len - len_of_int(i+1));
         switch_color("blue");
-        std::cout << i+1 << ") ";
+        std::cout << num_shift << i+1 << ")  ";
         switch_color("white");
         name_shift = multi_str(" ", std::max(4, max_length(line_from_column(0, tasks))) - int(tasks[i][0].length()) + 2);
         description_shift = multi_str(" ", std::max(11, max_length(line_from_column(1, tasks))) - int(tasks[i][1].length()) + 2);
@@ -252,11 +261,11 @@ void sort_tasks(std::vector<std::vector<std::string>>& tasks)
         }
         else if ((how_to_sort.first == "2") && (how_to_sort.second == "1"))
         {
-            return ((a[4] == "✔") && (b[4] == "✘"));
+            return ((a[4] == "✘") && (b[4] == "✔"));
         }
         else if ((how_to_sort.first == "2") && (how_to_sort.second == "-1"))
         {
-            return ((a[4] == "✘") && (b[4] == "✔"));
+            return ((a[4] == "✔") && (b[4] == "✘"));
         }
         else if ((how_to_sort.first == "3") && (how_to_sort.second == "1"))
         {
