@@ -6,6 +6,54 @@
 #include <ctime>
 #include <limits>
 #include <algorithm>
+#include <windows.h>
+
+void switch_color(std::string color)
+{
+    int color_code = 15;
+    if (color == "red") color_code = 12;
+    else if (color == "yellow") color_code = 14;
+    else if (color == "green") color_code = 10;
+    else if (color == "blue") color_code = 9;
+    else if (color == "black") color_code = 16;
+    else if (color == "white") color_code = 15;
+    else color_code = 15;
+    HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+    SetConsoleTextAttribute(hConsole, color_code);
+}
+
+std::string multi_str(std::string s, int n)
+{
+    std::string r = "";
+    for (int i = 0; i < n; ++i)
+    {
+        r += s;
+    }
+    return r;
+}
+
+int max_length(std::vector<std::string> a)
+{
+    int max = 0;
+    for (std::string s : a)
+    {
+        if (s.length() > max)
+        {
+            max = s.length();
+        }
+    }
+    return max;
+}
+
+std::vector<std::string> line_from_column(int i, std::vector<std::vector<std::string>> m)
+{
+    std::vector<std::string> a;
+    for (std::vector<std::string> line : m)
+    {
+        a.push_back(line[i]);
+    }
+    return a;
+}
 
 std::vector<std::string> split(std::string string, char delimiter)
 {
@@ -57,13 +105,39 @@ void save_db(std::string path, std::vector<std::vector<std::string>> tasks)
 
 void print_db(std::vector<std::vector<std::string>> tasks)
 {
+    std::string name_shift = multi_str(" ", std::max(4, max_length(line_from_column(0, tasks))) - 4 + 2);
+    std::string description_shift = multi_str(" ", std::max(11, max_length(line_from_column(1, tasks))) - 11 + 2);
+    std::string date_shift = multi_str(" ", std::max(13, max_length(line_from_column(2, tasks))) - 13 + 2);
+    std::string time_shift = multi_str(" ", std::max(13, max_length(line_from_column(3, tasks))) - 13 + 2);
+    std::cout << max_length(line_from_column(0, tasks)) << '\n';
+    for (std::string s : line_from_column(0, tasks))
+    {
+        std::cout << s.length() << '\n';
+    }
+
     std::cout << "Here are your tasks:\n";
+    switch_color("yellow");
+    std::cout << "N  Name" << name_shift << "Description" << description_shift << "Date deadline" << date_shift << "Time deadline" << time_shift <<"Status\n";
+    switch_color("white");
     for (int i = 0; i < tasks.size(); ++i)
     {
+        switch_color("blue");
         std::cout << i+1 << ") ";
-        for (std::string a : tasks[i])
+        switch_color("white");
+        name_shift = multi_str(" ", std::max(4, max_length(line_from_column(0, tasks))) - int(tasks[i][0].length()) + 2);
+        description_shift = multi_str(" ", std::max(11, max_length(line_from_column(1, tasks))) - int(tasks[i][1].length()) + 2);
+        date_shift = multi_str(" ", std::max(13, max_length(line_from_column(2, tasks))) - int(tasks[i][2].length()) + 2);
+        time_shift = multi_str(" ", std::max(13, max_length(line_from_column(3, tasks))) - int(tasks[i][3].length()) + 2);
+        for (auto a = tasks[i].begin(); a != tasks[i].end(); ++a)
         {
-            std::cout << a << ' ';
+            if (*a == "✔") switch_color("green");
+            if (*a == "✘") switch_color("red");
+            std::cout << *a;
+            if (a == tasks[i].begin()) std::cout << name_shift;
+            else if (a == (tasks[i].begin() + 1)) std::cout << description_shift;
+            else if (a == (tasks[i].begin() + 2)) std::cout << date_shift;
+            else if (a == (tasks[i].begin() + 3)) std::cout << time_shift;
+            switch_color("white");
         }
         std::cout << '\n';
     }
@@ -205,6 +279,7 @@ int main()
     while (working)
     {
         // main menu
+        switch_color("white");
         print_db(tasks);
         std::cout << "Choose what you want to do:\n\t1. Add the task\n\t2. Edit task\n\t3. Switch the status of the task\n\t4. Delete task\n\t5. Sort tasks\nOr print 0 to exit.\n";
         std::string mode;
@@ -214,6 +289,7 @@ int main()
         {
             working = false;
             save_db("tasks.txt", tasks);
+            switch_color("white");
             break;
         }
         // adding task
