@@ -189,8 +189,12 @@ void print_db(std::vector<std::vector<std::string>> tasks)
             {
                 if (is_deadline_passed(tasks[i][2], tasks[i][3], is_today))
                 {
-                    if (!is_today) switch_color("red");
-                    else if (*a != "0") switch_color("yellow");
+                    if (tasks[i][4] == "✘")
+                    {
+                        if (!is_today) switch_color("red");
+                        else if (*a != "0") switch_color("yellow");
+                    }
+                    else switch_color("green");
                 }
                 else if (is_today && *a != "0") switch_color("yellow");
             }
@@ -198,7 +202,8 @@ void print_db(std::vector<std::vector<std::string>> tasks)
             {
                 if (is_deadline_passed(tasks[i][2], tasks[i][3], is_today))
                 {
-                    switch_color("red");
+                    if (tasks[i][4] == "✘") switch_color("red");
+                    else switch_color("green");
                 }
             }
             std::cout << *a;
@@ -309,6 +314,60 @@ void switch_status(std::vector<std::vector<std::string>>& tasks)
     }
 }
 
+int days_in_year(int y)
+{
+    if (((y % 4 == 0) && (y % 100 != 0)) || (y % 400 == 0)) return 365;
+    else return 366;
+}
+
+int days_in_month(int m, int y)
+{
+    switch (m)
+    {
+        case 1: case 3: case 5: case 7: case 8: case 10: case 12:
+            return 31;
+            break;
+        case 4: case 6: case 9: case 11:
+            return 30;
+            break;
+        case 2:
+            if (days_in_year(y) == 365) return 28;
+            else return 29;
+            break;
+    }
+}
+
+int get_time(std::string date, std::string time)
+{
+    time_t current_time;
+    std::time(&current_time);
+    struct tm* time_now = localtime(&current_time);
+    // cases
+    if ((date == "0") && (time == "0"))
+    {
+        return std::numeric_limits<int>::max();
+    }
+    else if ((date == "0") && (time != "0"))
+    {
+        date = std::to_string(time_now->tm_year + 1900) + "." + std::to_string(time_now->tm_mon + 1) + "." + std::to_string(time_now->tm_mday);
+    }
+    else if ((date != "0") && (time == "0"))
+    {
+        time = "23:59";
+    }
+    int year, month, day, hour, minute;
+    sscanf(date.c_str(), "%d.%d.%d", &year, &month, &day);
+    sscanf(time.c_str(), "%d:%d", &hour, &minute);
+    struct tm deadline = {0};
+    deadline.tm_year = year - 1900;
+    deadline.tm_mon = month - 1;
+    deadline.tm_mday = day;
+    deadline.tm_hour = hour;
+    deadline.tm_min = minute;
+    deadline.tm_sec = 0;
+    return mktime(&deadline);
+}
+
 void sort_tasks(std::vector<std::vector<std::string>>& tasks)
 {
     std::pair<std::string, std::string> how_to_sort;
@@ -341,11 +400,11 @@ void sort_tasks(std::vector<std::vector<std::string>>& tasks)
         }
         else if ((how_to_sort.first == "3") && (how_to_sort.second == "1"))
         {
-
+            return (get_time(a[2], a[3]) < get_time(b[2], b[3]));
         }
         else if ((how_to_sort.first == "3") && (how_to_sort.second == "-1"))
         {
-
+            return !(get_time(a[2], a[3]) < get_time(b[2], b[3]));
         }
     });
 }
