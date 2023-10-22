@@ -6,6 +6,7 @@
 #include <limits>
 #include <algorithm>
 #include <windows.h>
+#include <regex>
 
 void switch_color(std::string color)
 {
@@ -230,6 +231,18 @@ void print_db(std::vector<std::vector<std::string>> tasks)
     std::cout << '\n';
 }
 
+bool is_in(char x, std::string s)
+{
+    for (char c : s)
+    {
+        if (c == x)
+        {
+            return true;
+        }
+    }
+    return false;
+}
+
 void add_task(std::vector<std::vector<std::string>>& tasks)
 {
     std::string string_date, string_time, status = "✘";
@@ -237,12 +250,34 @@ void add_task(std::vector<std::vector<std::string>>& tasks)
     std::cout << "Write the name of your task: ";
     std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
     std::cin.getline(name, 64);
+    if (is_in('\t', name))
+    {
+        std::cout << "Invalid input!\n";
+        return;
+    }
     std::cout << "Write the description of your task:\n\t";
     std::cin.getline(description, 256);
-    std::cout << "Write the deadline date or 0 if there is no deadline: ";
+    if (is_in('\t', description))
+    {
+        std::cout << "Invalid input!\n";
+        return;
+    }
+    std::cout << "Write the deadline date in yyyy.mm.dd format or 0 if there is no deadline: ";
     std::cin >> string_date;
-    std::cout << "Write the time by which you need to do the task\nor 0 if the task can be done at any time: ";
+    std::regex date_regex("[0-9]{4}.[0-9]{2}.[0-9]{2}");
+    if (!std::regex_match(string_date, date_regex))
+    {
+        std::cout << "Invalid input!\n";
+        return;
+    }
+    std::cout << "Write the time by which you need to do the task in hh:mm format\nor 0 if the task can be done at any time: ";
     std::cin >> string_time;
+    std::regex time_regex("([01]?[0-9]|2[0-3]):[0-5][0-9]");
+    if (!std::regex_match(string_time, time_regex))
+    {
+        std::cout << "Invalid input!\n";
+        return;
+    }
     std::vector<std::string> task{name, description, string_date, string_time, status};
     tasks.push_back(task);
 }
@@ -250,8 +285,13 @@ void add_task(std::vector<std::vector<std::string>>& tasks)
 void edit_task(std::vector<std::vector<std::string>>& tasks)
 {
     std::cout << "Write the number of the task you want to edit: ";
-    int task_num = 0; //TODO VALIDATION
+    int task_num = 0;
     std::cin >> task_num;
+    if ((task_num < 1) || (task_num > tasks.size()))
+    {
+        std::cout << "Invalid input!";
+        return;
+    }
     std::cout << "Select what you want to edit:\n\t1. Name\n\t2. Description\n\t3. Date deadline\n\t4. Time deadline\n";
     std::string choice;
     std::cin >> choice;
@@ -288,6 +328,7 @@ void edit_task(std::vector<std::vector<std::string>>& tasks)
     else
     {
         std::cout << "Invalid input!";
+        return;
     }
 }
 
@@ -296,6 +337,11 @@ void delete_task(std::vector<std::vector<std::string>>& tasks)
     int task_num = 0;
     std::cout << "Write the number of the task you want to delete: ";
     std::cin >> task_num;
+    if ((task_num < 1) || (task_num > tasks.size()))
+    {
+        std::cout << "Invalid input!";
+        return;
+    }
     tasks.erase(tasks.begin() + task_num - 1, tasks.begin() + task_num);
 }
 
@@ -304,6 +350,11 @@ void switch_status(std::vector<std::vector<std::string>>& tasks)
     int task_num = 0;
     std::cout << "Write the number of the task for which you want to change the status of completion: ";
     std::cin >> task_num;
+    if ((task_num < 1) || (task_num > tasks.size()))
+    {
+        std::cout << "Invalid input!";
+        return;
+    }
     if (tasks[task_num-1][4] == "✘")
     {
         tasks[task_num-1][4] = "✔";

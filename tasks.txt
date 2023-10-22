@@ -1,15 +1,16 @@
+Meeting with John	Discuss the project updates with John.	2023.10.20	14:30	✘	
+Wash the dishes	I need to wash the dishes before evening	2023.10.22	21:00	✘	
+Finish English Essay	Write a 3-page essay on the impact of technology on society.	2023.10.25	15:00	✘	
+Pay Monthly Bills	Settle monthly utility bills and rent.	2023.10.25	0	✘	
+Submit Work Report	Complete the quarterly work report for submission.	2023.10.27	17:30	✘	
+Review Budget	Review and update your monthly budget.	2023.10.28	0	✘	
+Dentist Appointment	Visit the dentist for a checkup and cleaning.	2023.10.30	10:00	✔	
+Research Project Meeting	Prepare for and attend the research project team meeting.	2023.10.31	14:00	✘	
+Attend Webinar	Register for and attend the webinar on AI and machine learning.	2023.11.02	19:00	✘	
+Birthday Gift for Sarah	Buy a birthday gift for Sarah's party.	2023.11.05	0	✔	
 Call Mom	Check in with Mom and see how she's doing.	0	0	✘	
 Workout	Go to the gym and do a full-body workout.	0	0	✘	
 Grocery Shopping	Buy groceries for the week, including fruits, vegetables, and milk.	0	0	✘	
-Attend Webinar	Register for and attend the webinar on AI and machine learning.	2023.11.02	19:00	✘	
-Research Project Meeting	Prepare for and attend the research project team meeting.	2023.10.31	14:00	✘	
-Review Budget	Review and update your monthly budget.	2023.10.28	0	✘	
-Submit Work Report	Complete the quarterly work report for submission.	2023.10.27	17:30	✘	
-Pay Monthly Bills	Settle monthly utility bills and rent.	2023.10.25	0	✘	
-Finish English Essay	Write a 3-page essay on the impact of technology on society.	2023.10.25	15:00	✘	
-Meeting with John	Discuss the project updates with John.	2023.10.20	14:30	✘	
 Buy New Running Shoes	Purchase a new pair of running shoes for your fitness routine.	0	0	✔	
 Call Alex	Catch up with Alex and discuss the upcoming vacation plans.	0	0	✔	
 Plan Weekend Getaway	Research and plan a weekend trip to the mountains.	0	0	✔	
-Birthday Gift for Sarah	Buy a birthday gift for Sarah's party.	2023.11.05	0	✔	
-Dentist Appointment	Visit the dentist for a checkup and cleaning.	2023.10.30	10:00	✔	
