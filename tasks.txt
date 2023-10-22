@@ -1,4 +1,4 @@
-Meeting with John	Discuss the project updates with John.	2023.10.20	14:30	✘	
+Meeting with John	Discuss the project updates with John.	2023.10.20	14:30	✔	
 Wash the dishes	I need to wash the dishes before evening	2023.10.22	21:00	✘	
 Finish English Essay	Write a 3-page essay on the impact of technology on society.	2023.10.25	15:00	✘	
 Pay Monthly Bills	Settle monthly utility bills and rent.	2023.10.25	0	✘	
