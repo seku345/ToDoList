@@ -167,7 +167,15 @@ void print_db(std::vector<std::vector<std::string>> tasks)
     std::string date_shift = multi_str(" ", std::max(13, max_length(line_from_column(2, tasks))) - 13 + 2);
     std::string time_shift = multi_str(" ", std::max(13, max_length(line_from_column(3, tasks))) - 13 + 2);
 
-    std::cout << "Here are your tasks:\n";
+    if (tasks.size() > 0)
+    {
+        std::cout << "Here are your tasks:\n";
+    }
+    else
+    {
+        std::cout << "You don't have any tasks yet\n";
+        return;
+    }
     switch_color("yellow");
     std::cout << "N" << num_shift << "Name" << name_shift << "Description" << description_shift << "Date deadline" << date_shift << "Time deadline" << time_shift <<"Status\n";
     switch_color("white");
@@ -490,25 +498,25 @@ int main()
             save_db("tasks.txt", tasks);
         }
         // editing task
-        else if (mode == "2")
+        else if ((mode == "2") && (tasks.size() > 0))
         {
             edit_task(tasks);
             save_db("tasks.txt", tasks);
         }
         // completing task
-        else if (mode == "3")
+        else if ((mode == "3") && (tasks.size() > 0))
         {
             switch_status(tasks);
             save_db("tasks.txt", tasks);
         }
         // deleting task
-        else if (mode == "4")
+        else if ((mode == "4") && (tasks.size() > 0))
         {
             delete_task(tasks);
             save_db("tasks.txt", tasks);
         }
         // sorting tasks
-        else if (mode == "5")
+        else if ((mode == "5") && (tasks.size() > 0))
         {
             sort_tasks(tasks);
             save_db("tasks.txt", tasks);
